@@ -7,11 +7,11 @@ from datetime import datetime
 
 st.set_page_config(layout="wide", page_title="SUS - IBF Visualization Platform", page_icon="🌧️")
 DATA_DIR = "data"
-FILE_NAME = "SUS_IBF_latest.json"
+FILE_NAME_LATEST = "SUS_IBF_latest.json"
 
 @st.cache_data
-def load_data():
-    data = gpd.read_file(f"{DATA_DIR}/{FILE_NAME}")
+def load_latest_data():
+    data = gpd.read_file(f"{DATA_DIR}/{FILE_NAME_LATEST}")
     data.loc[:, "effective"] = pd.to_datetime(data["effective"], unit="ms")
     data.loc[:, "sent"] = pd.to_datetime(data["sent"], unit="ms")
     data = data.loc[data["layer"] == "rainfall_risk"]
@@ -43,7 +43,7 @@ def make_map(data):
 
 def main():
     st.title("SUS - IBF Visualization Platform")
-    data = load_data()
+    data = load_latest_data()
     st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M') } UTC")
     timelist = sorted(data["effective"].unique())
     valid = st.select_slider("Select Time", options=[x.strftime("%d %b") for x in timelist])
