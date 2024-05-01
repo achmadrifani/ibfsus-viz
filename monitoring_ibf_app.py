@@ -6,10 +6,12 @@ import pandas as pd
 from datetime import datetime
 
 st.set_page_config(layout="wide", page_title="SUS - IBF Visualization Platform", page_icon="🌧️")
+DATA_DIR = "data"
+FILE_NAME = "SUS_IBF_latest.json"
 
 @st.cache_data
 def load_data():
-    data = gpd.read_file("data/sample.bin")
+    data = gpd.read_file(f"{DATA_DIR}/{FILE_NAME}")
     data.loc[:, "effective"] = pd.to_datetime(data["effective"], unit="ms")
     data.loc[:, "sent"] = pd.to_datetime(data["sent"], unit="ms")
     data = data.loc[data["layer"] == "rainfall_risk"]
