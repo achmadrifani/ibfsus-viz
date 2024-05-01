@@ -3,3 +3,4 @@ folium
 geopandas
 pandas
 streamlit-folium
+streamlit-extras
