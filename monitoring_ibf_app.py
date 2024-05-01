@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 from streamlit_extras.stylable_container import stylable_container
 
+#Test
 st.set_page_config(layout="wide", page_title="SUS - IBF Visualization Platform", page_icon="🌧️")
 DATA_DIR = "data"
 FILE_NAME_LATEST = "SUS_IBF_latest.json"
