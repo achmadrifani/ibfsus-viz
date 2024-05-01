@@ -25,7 +25,7 @@ def make_popup(row):
 <b>Effective at</b> {row['effective']}<br>
 <b>Impacted Area</b>: {row['area_desc']}
 </div>'''
-    return folium.Popup(popup_content,max_width=300)
+    return folium.Popup(popup_content,max_width=300,max_height=200)
 
 
 def make_map(data):
@@ -41,29 +41,54 @@ def make_map(data):
         polygon.add_child(popup_content)
     return poly
 
-def main():
-    st.title("SUS - IBF Visualization Platform")
-    data = load_latest_data()
-    st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M') } UTC")
-    timelist = sorted(data["effective"].unique())
-    valid = st.select_slider("Select Time", options=[x.strftime("%d %b") for x in timelist])
-    valid_date = datetime.strptime(valid, "%d %b").date()
 
-    if valid_date.day not in st.session_state:
-        st.session_state[f"data_{valid_date.day}"] = data.loc[data["effective"].dt.day == valid_date.day]
-
-    if f"map_{valid_date.day}" not in st.session_state:
-        st.session_state[f"map_{valid_date.day}"] = make_map(st.session_state[f"data_{valid_date.day}"])
-
-    m = folium.Map(location=[-2.5, 120], zoom_start=5, zoom_on_click=True)
-    folium.plugins.Fullscreen(
-        position="topright",
-        title="Expand me",
-        title_cancel="Exit me",
-        force_separate_button=True,
-    ).add_to(m)
-    st_folium(m,feature_group_to_add=[st.session_state[f"map_{valid_date.day}"]],use_container_width=True)
+def nextf():
+    if st.session_state["slider"] < timelist[-1]:
+        st.session_state.slider += (timelist[1] - timelist[0])
+    else:
+        pass
+    return
 
 
-if __name__ == "__main__":
-    main()
+def prevf():
+    if st.session_state["slider"] > timelist[0]:
+        st.session_state.slider -= (timelist[1] - timelist[0])
+    else:
+        pass
+    return
+
+
+# def main():
+st.title("SUS - IBF Visualization Platform")
+data = load_latest_data()
+st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M') } UTC")
+timelist = sorted(data["effective"].unique())
+
+valid_date = st.select_slider("Select Time", options=timelist, key="slider", format_func=lambda x: x.strftime("%d %b"))
+
+cols = st.columns([.1,.1,.8],gap='small')
+with cols[0]:
+    st.button("Previous", on_click=prevf, key="prev")
+with cols[1]:
+    st.button("Next", on_click=nextf, key="next")
+with cols[2]:
+    st.button("Refresh Data", on_click=load_latest_data, key="refresh")
+
+if valid_date.day not in st.session_state:
+    st.session_state[f"data_{valid_date.day}"] = data.loc[data["effective"].dt.day == valid_date.day]
+
+if f"map_{valid_date.day}" not in st.session_state:
+    st.session_state[f"map_{valid_date.day}"] = make_map(st.session_state[f"data_{valid_date.day}"])
+
+m = folium.Map(location=[-2.5, 120], zoom_start=5, zoom_on_click=True)
+folium.plugins.Fullscreen(
+    position="topright",
+    title="Expand me",
+    title_cancel="Exit me",
+    force_separate_button=True,
+).add_to(m)
+st_folium(m,feature_group_to_add=[st.session_state[f"map_{valid_date.day}"]],use_container_width=True)
+
+
+# if __name__ == "__main__":
+#     main()
