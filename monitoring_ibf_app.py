@@ -11,7 +11,6 @@ st.set_page_config(layout="wide", page_title="SUS - IBF Visualization Platform",
 DATA_DIR = "data"
 FILE_NAME_LATEST = "SUS_IBF_latest.json"
 
-@st.cache_data
 def load_latest_data():
     data = gpd.read_file(f"{DATA_DIR}/{FILE_NAME_LATEST}")
     data.loc[:, "effective"] = pd.to_datetime(data["effective"], unit="ms")
