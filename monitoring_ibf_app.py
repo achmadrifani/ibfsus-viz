@@ -9,12 +9,13 @@ st.set_page_config(layout="wide", page_title="SUS - IBF Visualization Platform",
 DATA_DIR = "data"
 FILE_NAME_LATEST = "SUS_IBF_latest.json"
 
-@st.cache_data
 def load_latest_data():
     data = gpd.read_file(f"{DATA_DIR}/{FILE_NAME_LATEST}")
     data.loc[:, "effective"] = pd.to_datetime(data["effective"], unit="ms")
     data.loc[:, "sent"] = pd.to_datetime(data["sent"], unit="ms")
     data = data.loc[data["layer"] == "rainfall_risk"]
+    if "data" in st.session_state:
+        st.session_state.data = data
     return data
 
 
@@ -60,7 +61,11 @@ def prevf():
 
 # def main():
 st.title("SUS - IBF Visualization Platform")
-data = load_latest_data()
+
+if "data" not in st.session_state:
+    st.session_state.data = load_latest_data()
+
+data = st.session_state.data
 st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M') } UTC")
 timelist = sorted(data["effective"].unique())
 
