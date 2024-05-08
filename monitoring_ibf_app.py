@@ -9,6 +9,7 @@ st.set_page_config(layout="wide", page_title="SUS - IBF Visualization Platform",
 DATA_DIR = "data"
 FILE_NAME_LATEST = "SUS_IBF_latest.json"
 
+
 def load_latest_data():
     data = gpd.read_file(f"{DATA_DIR}/{FILE_NAME_LATEST}")
     data.loc[:, "effective"] = pd.to_datetime(data["effective"], unit="ms")
@@ -26,7 +27,7 @@ def make_popup(row):
 <b>Effective at</b> {row['effective']}<br>
 <b>Impacted Area</b>: {row['area_desc']}
 </div>'''
-    return folium.Popup(popup_content,max_width=300,max_height=200)
+    return folium.Popup(popup_content, max_width=300, max_height=200)
 
 
 def make_map(data):
@@ -66,12 +67,12 @@ if "data" not in st.session_state:
     st.session_state.data = load_latest_data()
 
 data = st.session_state.data
-st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M') } UTC")
+st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M')} UTC")
 timelist = sorted(data["effective"].unique())
 
 valid_date = st.select_slider("Select Time", options=timelist, key="slider", format_func=lambda x: x.strftime("%d %b"))
 
-cols = st.columns([.1,.1,.8],gap='small')
+cols = st.columns([.1, .1, .8], gap='small')
 with cols[0]:
     st.button("Previous", on_click=prevf, key="prev")
 with cols[1]:
@@ -92,8 +93,7 @@ folium.plugins.Fullscreen(
     title_cancel="Exit me",
     force_separate_button=True,
 ).add_to(m)
-st_folium(m,feature_group_to_add=[st.session_state[f"map_{valid_date.day}"]],use_container_width=True)
-
+st_folium(m, feature_group_to_add=[st.session_state[f"map_{valid_date.day}"]], use_container_width=True)
 
 # if __name__ == "__main__":
 #     main()
