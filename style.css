@@ -1,0 +1,17 @@
+* {
+    box-sizing: content-box;
+}
+
+.row-widget.stButton {
+    width: 0;
+    height: 0;
+    background-color: rgb(0, 0, 0, 0);
+    color: rgb(0, 0, 0, 0);
+}
+
+.st-emotion-cache-7ym5gk.ef3psqc12{
+    position: relative;
+    z-index: 5;
+    top: 600px;
+    left: 20px;
+}
