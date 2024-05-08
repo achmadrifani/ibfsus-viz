@@ -60,7 +60,10 @@ def prevf():
 
 # def main():
 st.title("SUS - IBF Visualization Platform")
-data = load_latest_data()
+if "data" not in st.session_state:
+    st.session_state.data = load_latest_data()
+
+data = st.session_state.data
 st.write(f"### Latest data update: {data['sent'].max().strftime('%d %b %Y %H:%M') } UTC")
 timelist = sorted(data["effective"].unique())
 
